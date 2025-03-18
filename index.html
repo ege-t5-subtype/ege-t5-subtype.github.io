@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Решение 5 типа ЕГЭ</title>
-    <link rel="icon" href="data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSIyNTAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIyNTYiIHk9IjI4MCIgZm9udC1zaXplPSIyODAiIGZvbnQtZmFmiWx5PSJBcmlhbCIgZmlsbD0iIzAwMDBmZiIgZm9udC13ZWlnaHQ9Ijk1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+SVA8L3RleHQ+Cjwvc3ZnPg==">
+    <link rel="icon" href="data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSIyNTAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIyNTYiIHk9IjI4MCIgZm9udC1zaXplPSIyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZmlsbD0iIzAwMDBmZiIgZm9udC13ZWlnaHQ9Ijk1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+SVA8L3RleHQ+Cjwvc3ZnPg==">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @font-face {
@@ -44,12 +44,6 @@
             margin-top: 4rem;
         }
 
-        .footer-link {
-            color: #3B82F6;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-
         .term-tooltip {
             position: relative;
             cursor: help;
@@ -72,15 +66,25 @@
         }
 
         @media (max-width: 640px) {
-            .mobile-step3 {
-                font-size: 90%;
+            .mobile-step3 { font-size: 90%; }
+            .bit-item { min-width: 10px; }
+            
+            .theory-ip-box .font-mono {
+                font-size: 80%;
+                padding: 2px 4px;
+                line-height: 1.2;
+            }
+            
+            .theory-ip-box {
+                padding: 12px;
+                margin: 8px 0;
             }
         }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen p-6">
     <div class="max-w-4xl mx-auto space-y-8">
-        <!-- Кнопка открытия теории -->
+        <!-- Кнопка теории -->
         <button id="theoryToggle" 
                 class="fixed top-4 right-4 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-all z-50"
                 onclick="toggleTheory()">
@@ -91,66 +95,76 @@
         <div id="theoryModal" class="theory-modal fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40">
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl p-6">
                 <div class="bg-gray-800 rounded-xl p-6 space-y-6 max-h-[80vh] overflow-y-auto">
-                    <h2 class="text-2xl font-bold text-emerald-400 mb-4">🧠 Теоретическая база</h2>
-                    
-                    <div class="space-y-4">
-                        <h3 class="text-xl font-bold text-purple-400 mb-2">📝 Условие задачи</h3>
-                        <p class="text-gray-300">
-                            Дано: IP-адрес <span class="font-mono text-cyan-400">137.219.220.63</span> 
-                            принадлежит сети, но не является широковещательным.<br>
-                            Найти: Максимальное количество единиц в маске этой сети.
-                        </p>
-                        <p class="text-gray-300">
-                            Пример: Для узла <span class="term-tooltip" data-tooltip="Пример IP-адреса">192.168.1.77</span> 
-                            и маски <span class="term-tooltip" data-tooltip="Пример маски сети">255.255.255.192</span>:<br>
-                            • Адрес сети: <span class="font-mono">192.168.1.64</span><br>
-                            • Широковещательный адрес: <span class="font-mono">192.168.1.127</span>
-                        </p>
-                    </div>
+                    <div class="space-y-6">
+                        <h2 class="text-2xl font-bold text-emerald-400 mb-4">🧠 Как это решать</h2>
+                        
+                        <div class="bg-gray-700 p-4 rounded-lg theory-ip-box">
+                            <h3 class="text-lg font-bold text-purple-300 mb-2">✏️ Условие задачи</h3>
+                            <p class="mb-2">Дан IP-адрес <span class="font-mono bg-gray-600 px-2 py-1 rounded">137.219.220.63</span>. Нужно найти максимальное количество единиц в маске его сети, при этом</p>
+                            <ul class="list-disc list-inside ml-4">
+                                <li>Этот IP принадлежит сети</li>
+                                <li>Это НЕ широковещательный адрес</li>
+                            </ul>
+                        </div>
 
-                    <div class="space-y-4">
-                        <h3 class="text-xl font-bold text-purple-400 mb-2">📚 Основные понятия</h3>
-                        <ul class="space-y-3 text-gray-300">
-                            <li>
-                                <span class="term-tooltip" data-tooltip="Двоичное число, определяющее границы сети">
-                                    Маска сети
-                                </span> - определяет, какая часть IP-адреса относится к сети
-                            </li>
-                            <li>
-                                <span class="term-tooltip" data-tooltip="Первый адрес в диапазоне сети">
-                                    Адрес сети
-                                </span> - вычисляется через 
-                                <span class="term-tooltip" data-tooltip="Логическая операция И между битами">
-                                    поразрядную конъюнкцию
-                                </span> IP и маски
-                            </li>
-                            <li>
-                                <span class="term-tooltip" data-tooltip="Последний адрес в диапазоне сети">
-                                    Широковещательный адрес
-                                </span> - все биты хостовой части установлены в 1
-                            </li>
-                        </ul>
-                    </div>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-purple-300 mb-2">🔑 Основная идея</h3>
+                            <p class="mb-2">Маска сети — это как трафарет</p>
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="bit-container bg-gray-600 p-1 rounded">
+                                    <span class="text-emerald-400">11111111</span>.<span class="text-emerald-400">11111111</span>.<span class="text-emerald-400">11111111</span>.<span class="text-gray-300">00000000</span>
+                                </div>
+                                <span class="text-gray-400">→</span>
+                                <div class="text-sm">24 единицы</div>
+                            </div>
+                            <p>Чем больше единиц в маске — тем меньше компьютеров в сети</p>
+                        </div>
 
-                    <div class="space-y-4">
-                        <h3 class="text-xl font-bold text-purple-400 mb-2">🔗 Полезные ресурсы</h3>
-                        <div class="grid gap-2">
-                            <a href="https://ru.wikipedia.org/wiki/IP-адрес" 
-                               class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300"
-                               target="_blank">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-.001 5.875c.34-.005.683.119.947.354.265.235.417.57.417.923v8.5c0 .354-.152.689-.417.923-.264.235-.607.36-.947.354s-.683-.119-.948-.354c-.265-.234-.417-.569-.417-.923v-8.5c0-.354.152-.688.417-.923.265-.235.608-.36.948-.354zM12 18.5c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/>
-                                </svg>
-                                Основы IP-адресации
-                            </a>
-                            <a href="https://habr.com/ru/post/350878/" 
-                               class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300"
-                               target="_blank">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-.001 5.875c.34-.005.683.119.947.354.265.235.417.57.417.923v8.5c0 .354-.152.689-.417.923-.264.235-.607.36-.947.354s-.683-.119-.948-.354c-.265-.234-.417-.569-.417-.923v-8.5c0-.354.152-.688.417-.923.265-.235.608-.36.948-.354zM12 18.5c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/>
-                                </svg>
-                                Подробнее о масках сетей
-                            </a>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-purple-300 mb-2">📌 Важные факты</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-2">
+                                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">1</div>
+                                    <div>
+                                        <p class="font-medium">Адрес сети — первый адрес</p>
+                                        <p class="text-sm text-gray-300">Получается, когда в хостовой части все биты = 0</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-2">
+                                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">2</div>
+                                    <div>
+                                        <p class="font-medium">Широковещательный адрес — последний адрес</p>
+                                        <p class="text-sm text-gray-300">Получается, когда в хостовой части все биты = 1</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-2">
+                                    <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">3</div>
+                                    <div>
+                                        <p class="font-medium">Наш IP — между этими адресами</p>
+                                        <p class="text-sm text-gray-300">Поэтому ищем последний ноль в его двоичной записи</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-purple-300 mb-2">📝 Пошаговый метод</h3>
+                            <ol class="list-decimal list-inside ml-4 space-y-3">
+                                <li>Перевести IP в двоичный вид</li>
+                                <li>Найти последний ноль в этой записи</li>
+                                <li>Все биты после этого нуля — должны быть единицами в маске</li>
+                                <li>Посчитать общее количество единиц</li>
+                            </ol>
+                            <div class="mt-4 p-3 bg-gray-600 rounded">
+                                <p class="text-sm font-mono">Пример для 192.168.1.77</p>
+                                <p class="text-sm text-gray-300">
+                                    Бинарный вид<br>
+                                    <span class="text-emerald-400">11000000.10101000.00000001</span>.<span class="text-gray-300">01001101</span>
+                                </p>
+                                <p class="text-sm mt-1">Последний ноль на 26 позиции → маска /26 (26 единиц)</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -178,20 +192,10 @@
             <div class="text-center">
                 <p class="text-sm text-gray-400">
                     Сайт создан для Лицея НИУ ВШЭ<br>
-                    Используемый шрифт: 
-                    <span class="font-medium text-emerald-400">HSE Sans</span> • 
-                    Разработан <a href="https://design.hse.ru" class="footer-link" target="_blank">Школой дизайна НИУ ВШЭ</a>
-                </p>
-                <p class="mt-2">
-                    <a href="https://www.hse.ru" 
-                       class="footer-link text-sm inline-flex items-center gap-1"
-                       target="_blank">
-                        Официальный сайт 
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                        </svg>
-                    </a>
+                    Используемый шрифт: HSE Sans 
+                    (<a href="https://design.hse.ru" 
+                       class="text-blue-400 hover:text-blue-300"
+                       target="_blank">Разработан Школой дизайна НИУ ВШЭ</a>)
                 </p>
             </div>
         </footer>
@@ -269,9 +273,9 @@ function getStep1Content() {
         <div class="bg-gray-800 rounded-xl p-6">
             <h3 class="text-xl font-bold text-cyan-400">Шаг 1: Преобразование в двоичный вид</h3>
             <div class="mt-4 space-y-2">
-                <p class="text-gray-400">Исходный IP:</p>
+                <p class="text-gray-400">Исходный IP</p>
                 <div class="font-mono text-emerald-400 text-xl">${document.getElementById('ipInput').value}</div>
-                <p class="text-gray-400 mt-4">Двоичное представление:</p>
+                <p class="text-gray-400 mt-4">Двоичное представление</p>
                 <div class="font-mono bg-gray-700 p-3 rounded-lg">
                     ${formatBinary(binaryIP)}
                 </div>
@@ -291,12 +295,12 @@ function getStep2Content() {
         <div class="bg-gray-800 rounded-xl p-6">
             <h3 class="text-xl font-bold text-cyan-400">Шаг 2: Поиск последнего нуля</h3>
             <div class="mt-4 space-y-2">
-                <p class="text-gray-400">Находим последний ноль в бинарной записи:</p>
+                <p class="text-gray-400">Находим последний ноль в бинарной записи</p>
                 <div class="font-mono bg-gray-700 p-3 rounded-lg">
                     ${highlightLastZero(binaryIP)}
                 </div>
                 <p class="text-sm text-gray-400 mt-2">
-                    Позиция последнего нуля: ${lastZeroIndex + 1}
+                    Позиция последнего нуля ${lastZeroIndex + 1}
                 </p>
             </div>
             <button onclick="renderNextStep()" 
@@ -316,12 +320,12 @@ function getStep3Content() {
         <div class="bg-gray-800 rounded-xl p-6">
             <h3 class="text-xl font-bold text-cyan-400">Шаг 3: Генерация широковещательного адреса</h3>
             <div class="mt-4 space-y-2">
-                <p class="text-gray-400">Заменяем все биты после последнего нуля на единицы:</p>
+                <p class="text-gray-400">Заменяем все биты после последнего нуля на единицы</p>
                 <div class="font-mono bg-gray-700 p-3 rounded-lg mobile-step3">
                     ${formatBinaryWithDots(broadcastBinary)}
                 </div>
                 <p class="text-sm text-gray-400 mt-2">
-                    Десятичный формат: ${binaryToIP(broadcastBinary)}
+                    Десятичный формат ${binaryToIP(broadcastBinary)}
                 </p>
             </div>
             <button onclick="renderNextStep()" 
@@ -339,7 +343,7 @@ function getStep4Content() {
         <div class="bg-gray-800 rounded-xl p-6">
             <h3 class="text-xl font-bold text-cyan-400">Шаг 4: Определение маски сети</h3>
             <div class="mt-4 space-y-2">
-                <p class="text-gray-400">Количество единиц в маске:</p>
+                <p class="text-gray-400">Количество единиц в маске</p>
                 <div class="font-mono text-3xl text-emerald-400">
                     ${maskLength}
                 </div>
@@ -361,7 +365,7 @@ function getStep5Content() {
         <div class="bg-gray-800 rounded-xl p-6">
             <h3 class="text-xl font-bold text-emerald-400">🎉 Решение найдено!</h3>
             <div class="mt-4 space-y-2">
-                <p class="text-gray-400">Максимальное количество единиц в маске:</p>
+                <p class="text-gray-400">Максимальное количество единиц в маске</p>
                 <div class="font-mono text-4xl text-purple-400 animate-pulse">
                     ${broadcastBinary.lastIndexOf('0') + 1}
                 </div>
