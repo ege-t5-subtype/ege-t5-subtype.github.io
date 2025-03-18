@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтип 5 задачи. Разбор.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: "HSE Sans";
+            src: url("https://db.onlinewebfonts.com/t/869ee3f760a416f2dadc427a61de209e.eot");
+            src: url("https://db.onlinewebfonts.com/t/869ee3f760a416f2dadc427a61de209e.eot?#iefix")format("embedded-opentype"),
+            url("https://db.onlinewebfonts.com/t/869ee3f760a416f2dadc427a61de209e.woff2")format("woff2"),
+            url("https://db.onlinewebfonts.com/t/869ee3f760a416f2dadc427a61de209e.woff")format("woff"),
+            url("https://db.onlinewebfonts.com/t/869ee3f760a416f2dadc427a61de209e.ttf")format("truetype"),
+            url("https://db.onlinewebfonts.com/t/869ee3f760a416f2dadc427a61de209e.svg#HSE Sans")format("svg");
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .step-card {
+            animation: slideUp 0.5s ease-out;
+            font-family: "HSE Sans", sans-serif;
+            margin-top: 1.5rem;
+        }
+        .bit-container { display: inline-flex; gap: 2px; margin: 0 1px; }
+        .bit-item { 
+            display: inline-block; 
+            min-width: 12px;
+            padding: 0 1px;
+        }
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        .footer-link {
+            color: #3B82F6;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .footer-link:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto space-y-8">
+        <!-- Блок ввода IP -->
+        <div class="bg-gray-800 rounded-xl p-6 space-y-4">
+            <h2 class="text-2xl font-bold text-emerald-400 mb-4">Введите IP-адрес</h2>
+            <input type="text" id="ipInput" 
+                   class="w-full bg-gray-700 rounded-lg p-3 font-mono focus:ring-2 focus:ring-emerald-400"
+                   value="137.219.220.63"
+                   placeholder="Введите IP (например: 192.168.1.1)">
+            <button onclick="startAnalysis()"
+                    class="w-full bg-emerald-600 hover:bg-emerald-700 p-3 rounded-lg transition-all">
+                🚀 Начать анализ
+            </button>
+        </div>
+
+        <!-- Контейнер для шагов решения -->
+        <div id="stepsContainer" class="space-y-6"></div>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="text-center">
+                <p class="text-sm text-gray-400">
+                    Сайт создан для Лицея НИУ ВШЭ<br>
+                    Используемый шрифт: 
+                    <span class="font-medium text-emerald-400">HSE Sans</span> • 
+                    Разработан <a href="https://design.hse.ru" class="footer-link" target="_blank">Школой дизайна НИУ ВШЭ</a>
+                </p>
+                <p class="mt-2">
+                    <a href="https://www.hse.ru" 
+                       class="footer-link text-sm inline-flex items-center gap-1"
+                       target="_blank">
+                        Официальный сайт 
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                    </a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+<script>
+let currentStep = 0;
+let stepsData = [];
+let broadcastBinary = '';
+let binaryIP = '';
+
+function startAnalysis() {
+    const ip = document.getElementById('ipInput').value;
+    if(!validateIP(ip)) return;
+
+    currentStep = 0;
+    stepsData = [];
+    broadcastBinary = '';
+    binaryIP = ipToBinary(ip);
+    
+    initializeStepsData();
+    renderNextStep();
+}
+
+function validateIP(ip) {
+    const ipPattern = /^(\d{1,3}(\.|$)){4}/;
+    if(!ipPattern.test(ip)) {
+        alert('Неверный формат IP-адреса');
+        return false;
+    }
+    return true;
+}
+
+function ipToBinary(ip) {
+    return ip.split('.').map(octet => 
+        parseInt(octet).toString(2).padStart(8, '0')
+    ).join('.');
+}
+
+function initializeStepsData() {
+    stepsData = [
+        getStep1Content(),
+        getStep2Content(),
+        getStep3Content(),
+        getStep4Content(),
+        getStep5Content()
+    ];
+}
+
+function renderNextStep() {
+    if(currentStep >= stepsData.length) return;
+    
+    const stepContainer = document.createElement('div');
+    stepContainer.className = 'step-card';
+    stepContainer.innerHTML = stepsData[currentStep];
+    
+    document.getElementById('stepsContainer').appendChild(stepContainer);
+    currentStep++;
+    
+    stepContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+function getStep1Content() {
+    return `
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-cyan-400">Шаг 1: Преобразование в двоичный вид</h3>
+            <div class="mt-4 space-y-2">
+                <p class="text-gray-400">Исходный IP:</p>
+                <div class="font-mono text-emerald-400 text-xl">${document.getElementById('ipInput').value}</div>
+                <p class="text-gray-400 mt-4">Двоичное представление:</p>
+                <div class="font-mono bg-gray-700 p-3 rounded-lg">
+                    ${formatBinary(binaryIP)}
+                </div>
+            </div>
+            <button onclick="renderNextStep()" 
+                    class="mt-4 bg-cyan-600 hover:bg-cyan-700 p-2 px-4 rounded-lg transition-all">
+                Далее →
+            </button>
+        </div>
+    `;
+}
+
+function getStep2Content() {
+    const cleanBinary = binaryIP.replace(/\./g, '');
+    const lastZeroIndex = cleanBinary.lastIndexOf('0');
+    return `
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-cyan-400">Шаг 2: Поиск последнего нуля</h3>
+            <div class="mt-4 space-y-2">
+                <p class="text-gray-400">Находим последний ноль в бинарной записи:</p>
+                <div class="font-mono bg-gray-700 p-3 rounded-lg">
+                    ${highlightLastZero(binaryIP)}
+                </div>
+                <p class="text-sm text-gray-400 mt-2">
+                    Позиция последнего нуля: ${lastZeroIndex + 1}
+                </p>
+            </div>
+            <button onclick="renderNextStep()" 
+                    class="mt-4 bg-cyan-600 hover:bg-cyan-700 p-2 px-4 rounded-lg transition-all">
+                Далее →
+            </button>
+        </div>
+    `;
+}
+
+function getStep3Content() {
+    const cleanBinary = binaryIP.replace(/\./g, '');
+    const lastZeroIndex = cleanBinary.lastIndexOf('0');
+    broadcastBinary = cleanBinary.slice(0, lastZeroIndex) + '1'.repeat(32 - lastZeroIndex);
+    
+    return `
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-cyan-400">Шаг 3: Генерация широковещательного адреса</h3>
+            <div class="mt-4 space-y-2">
+                <p class="text-gray-400">Заменяем все биты после последнего нуля на единицы:</p>
+                <div class="font-mono bg-gray-700 p-3 rounded-lg">
+                    ${formatBinaryWithDots(broadcastBinary)}
+                </div>
+                <p class="text-sm text-gray-400 mt-2">
+                    Десятичный формат: ${binaryToIP(broadcastBinary)}
+                </p>
+            </div>
+            <button onclick="renderNextStep()" 
+                    class="mt-4 bg-cyan-600 hover:bg-cyan-700 p-2 px-4 rounded-lg transition-all">
+                Далее →
+            </button>
+        </div>
+    `;
+}
+
+function getStep4Content() {
+    const maskLength = broadcastBinary.lastIndexOf('0') + 1;
+    
+    return `
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-cyan-400">Шаг 4: Определение маски сети</h3>
+            <div class="mt-4 space-y-2">
+                <p class="text-gray-400">Количество единиц в маске:</p>
+                <div class="font-mono text-3xl text-emerald-400">
+                    ${maskLength}
+                </div>
+                <div class="h-2 bg-gray-700 rounded-full mt-2">
+                    <div class="h-full bg-emerald-400 rounded-full" 
+                         style="width: ${(maskLength/32)*100}%"></div>
+                </div>
+            </div>
+            <button onclick="renderNextStep()" 
+                    class="mt-4 bg-cyan-600 hover:bg-cyan-700 p-2 px-4 rounded-lg transition-all">
+                Завершить
+            </button>
+        </div>
+    `;
+}
+
+function getStep5Content() {
+    return `
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-emerald-400">🎉 Решение найдено!</h3>
+            <div class="mt-4 space-y-2">
+                <p class="text-gray-400">Максимальное количество единиц в маске:</p>
+                <div class="font-mono text-4xl text-purple-400 animate-pulse">
+                    ${broadcastBinary.lastIndexOf('0') + 1}
+                </div>
+            </div>
+            <button onclick="resetAnalysis()" 
+                    class="mt-4 bg-gray-600 hover:bg-gray-700 p-2 px-4 rounded-lg transition-all w-full">
+                🔄 Начать заново
+            </button>
+        </div>
+    `;
+}
+
+function resetAnalysis() {
+    document.getElementById('stepsContainer').innerHTML = '';
+    currentStep = 0;
+    stepsData = [];
+    broadcastBinary = '';
+    binaryIP = '';
+    document.getElementById('ipInput').value = '137.219.220.63';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function highlightLastZero(binaryWithDots) {
+    const octets = binaryWithDots.split('.');
+    const cleanBinary = octets.join('');
+    const lastZeroIndex = cleanBinary.lastIndexOf('0');
+    
+    if(lastZeroIndex === -1) return formatBinary(binaryWithDots);
+
+    const octetIndex = Math.floor(lastZeroIndex / 8);
+    const bitIndex = lastZeroIndex % 8;
+    
+    return octets.map((octet, idx) => {
+        if(idx === octetIndex) {
+            const before = octet.slice(0, bitIndex);
+            const after = octet.slice(bitIndex + 1);
+            return `<span class="bit-container">${
+                before.split('').map(bit => `<span class="bit-item ${bit === '1' ? 'text-emerald-400' : 'text-gray-400'}">${bit}</span>`).join('')
+            }<span class="bit-item bg-blue-500 text-white">0</span>${
+                after.split('').map(bit => `<span class="bit-item ${bit === '1' ? 'text-emerald-400' : 'text-gray-400'}">${bit}</span>`).join('')
+            }</span>`;
+        }
+        return `<span class="bit-container">${
+            octet.split('').map(bit => `<span class="bit-item ${bit === '1' ? 'text-emerald-400' : 'text-gray-400'}">${bit}</span>`).join('')
+        }</span>`;
+    }).join('<span class="text-purple-400 mx-1">.</span>');
+}
+
+function formatBinary(binaryWithDots) {
+    return binaryWithDots.split('.').map(octet => 
+        `<span class="bit-container">${
+            octet.split('').map(bit => `<span class="bit-item ${bit === '1' ? 'text-emerald-400' : 'text-gray-400'}">${bit}</span>`).join('')
+        }</span>`
+    ).join('<span class="text-purple-400 mx-1">.</span>');
+}
+
+function formatBinaryWithDots(binary) {
+    return binary.match(/.{8}/g).join('.');
+}
+
+function binaryToIP(binary) {
+    return binary.match(/.{8}/g).map(octet => 
+        parseInt(octet, 2)
+    ).join('.');
+}
+</script>
+</body>
+</html>
